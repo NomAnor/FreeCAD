@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME <Your e-mail address>                    *
+ *   Copyright (c) 2011 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,64 +20,45 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "Feature.h"
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-#include <Python.h>
 #endif
 
-#include <Base/Console.h>
-#include <Base/Interpreter.h>
-#include <Base/PyObjectBase.h>
+#include <App/Application.h>
 
-#include <CXX/Extensions.hxx>
-#include <CXX/Objects.hxx>
-
-#include "Feature.h"
+FC_LOG_LEVEL_INIT("NomANor", true, true)
 
 
 namespace NomAnor
 {
-class Module: public Py::ExtensionModule<Module>
+
+PROPERTY_SOURCE(NomAnor::Feature, PartDesign::Feature)
+
+Feature::Feature()
 {
-public:
-    Module()
-        : Py::ExtensionModule<Module>("NomAnor")
-    {
-        initialize("This module is the NomAnor module.");  // register with Python
-    }
+    ADD_PROPERTY_TYPE(Refine,
+                      (0),
+                      "Part Design",
+                      (App::PropertyType)(App::Prop_None),
+                      "Refine shape (clean up redundant edges) after adding/subtracting");
 
-    virtual ~Module()
-    {}
-
-private:
-};
-
-PyObject* initModule()
-{
-    return Base::Interpreter().addModule(new Module);
+    // Initialize Refine property from preference
+    Base::Reference<ParameterGrp> hGrp = App::GetApplication()
+                                             .GetUserParameter()
+                                             .GetGroup("BaseApp")
+                                             ->GetGroup("Preferences")
+                                             ->GetGroup("Mod/PartDesign");
+    Refine.setValue(hGrp->GetBool("RefineModel", false));
 }
 
+short Feature::mustExecute() const
+{
+    if (Refine.isTouched()) {
+        return 1;
+    }
+    return PartDesign::Feature::mustExecute();
+}
 
 }  // namespace NomAnor
-
-
-/* Python entry */
-PyMOD_INIT_FUNC(NomAnor)
-{
-    // Load dependent modules
-    try {
-        Base::Interpreter().runString("import PartDesign");
-    }
-    catch(const Base::Exception& e) {
-        PyErr_SetString(PyExc_ImportError, e.what());
-        PyMOD_Return(nullptr);
-    }
-
-    // Register all objects
-    NomAnor::Feature::init();
-
-    PyObject* mod = NomAnor::initModule();
-    Base::Console().Log("Loading NomAnor module... done\n");
-    PyMOD_Return(mod);
-}

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME <Your e-mail address>                    *
+ *   Copyright (c) 2011 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,63 +21,33 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-#include <Python.h>
-#endif
+#ifndef NOMANOR_Feature_H
+#define NOMANOR_Feature_H
 
-#include <Base/Console.h>
-#include <Base/Interpreter.h>
-#include <Base/PyObjectBase.h>
-
-#include <CXX/Extensions.hxx>
-#include <CXX/Objects.hxx>
-
-#include "Feature.h"
-
+#include <Mod/NomAnor/NomAnorGlobal.h>
+#include <App/PropertyStandard.h>
+#include <Mod/PartDesign/App/Feature.h>
 
 namespace NomAnor
 {
-class Module: public Py::ExtensionModule<Module>
+
+/** PartDesign feature
+ *   Base class of all PartDesign features.
+ *   This kind of features only produce solids or fail.
+ */
+class NomAnorExport Feature: public PartDesign::Feature
 {
+    PROPERTY_HEADER_WITH_OVERRIDE(NomAnor::Feature);
+
 public:
-    Module()
-        : Py::ExtensionModule<Module>("NomAnor")
-    {
-        initialize("This module is the NomAnor module.");  // register with Python
-    }
+    Feature();
 
-    virtual ~Module()
-    {}
+    App::PropertyBool Refine;
 
-private:
+    short mustExecute() const override;
 };
-
-PyObject* initModule()
-{
-    return Base::Interpreter().addModule(new Module);
-}
-
 
 }  // namespace NomAnor
 
 
-/* Python entry */
-PyMOD_INIT_FUNC(NomAnor)
-{
-    // Load dependent modules
-    try {
-        Base::Interpreter().runString("import PartDesign");
-    }
-    catch(const Base::Exception& e) {
-        PyErr_SetString(PyExc_ImportError, e.what());
-        PyMOD_Return(nullptr);
-    }
-
-    // Register all objects
-    NomAnor::Feature::init();
-
-    PyObject* mod = NomAnor::initModule();
-    Base::Console().Log("Loading NomAnor module... done\n");
-    PyMOD_Return(mod);
-}
+#endif  // NOMANOR_Feature_H

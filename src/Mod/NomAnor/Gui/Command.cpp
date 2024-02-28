@@ -32,7 +32,53 @@
 #include <Mod/PartDesign/App/Body.h>
 #include <Mod/PartDesign/Gui/Utils.h>
 
+#include <Mod/NomAnor/App/Feature.h>
+
+
+DEF_STD_CMD_A(CmdNomAnorFeature)
+
+CmdNomAnorFeature::CmdNomAnorFeature()
+    : Command("NomAnor_Feature")
+{
+    sAppModule = "NomAnor";
+    sGroup = QT_TR_NOOP("NomAnor");
+    sMenuText = QT_TR_NOOP("Feature");
+    sToolTipText = QT_TR_NOOP("Feature add function");
+    sWhatsThis = "NomAnor_Feature";
+    sStatusTip = sToolTipText;
+    sPixmap = "PartDesign_Pad";
+}
+
+void CmdNomAnorFeature::activated(int)
+{
+    PartDesign::Body* pcActiveBody = PartDesignGui::getBody(/*messageIfNot = */ true);
+    if (!pcActiveBody) {
+        return;
+    }
+
+    openCommand(QT_TRANSLATE_NOOP("Command", "Create Feature"));
+
+    std::string featureName = getUniqueObjectName("Feature", pcActiveBody);
+    FCMD_OBJ_CMD(pcActiveBody, "newObject('NomAnor::Feature', '" << featureName << "')");
+
+    //auto feature =
+    //    static_cast<NomAnor::Feature*>(pcActiveBody->getDocument()->getObject(featureName.c_str()));
+}
+
+bool CmdNomAnorFeature::isActive()
+{
+    if (getActiveGuiDocument()) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 
 void CreateNomAnorCommands(void)
 {
+    Gui::CommandManager& rcCmdMgr = Gui::Application::Instance->commandManager();
+
+    rcCmdMgr.addCommand(new CmdNomAnorFeature());
 }

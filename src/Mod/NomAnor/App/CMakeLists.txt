@@ -4,16 +4,21 @@ include_directories(
     ${OCC_INCLUDE_DIR}
     ${PYTHON_INCLUDE_DIRS}
 )
+link_directories(${OCC_LIBRARY_DIR})
 
 set(NomAnor_LIBS
     FreeCADApp
     PartDesign
+    ${OCC_LIBRARIES}
+    ${OCC_DEBUG_LIBRARIES}
 )
 
 SET(NomAnor_SRCS
     AppNomAnor.cpp
     PreCompiled.cpp
     PreCompiled.h
+    Feature.h
+    Feature.cpp
 )
 
 add_library(NomAnor SHARED ${NomAnor_SRCS})
