@@ -20,45 +20,46 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "Feature.h"
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-#endif
+#ifndef NOMANOR_FeatureToolShape_H
+#define NOMANOR_FeatureToolShape_H
 
-#include <App/Application.h>
+#include <vector>
 
-FC_LOG_LEVEL_INIT("NomANor", true, true)
+#include <App/PropertyStandard.h>
 
+#include "../NomAnorGlobal.h"
+#include "FeatureToolShapes.h"
 
 namespace NomAnor
 {
 
-PROPERTY_SOURCE(NomAnor::Feature, PartDesign::Feature)
-
-Feature::Feature()
+/** PartDesign feature based on tool shapes
+ * Base class of all PartDesign features that use boolean operations with tools shapes.
+ */
+class NomAnorExport FeatureToolShape: public NomAnor::FeatureToolShapes
 {
-    ADD_PROPERTY_TYPE(Refine,
-                      (0),
-                      "Part Design",
-                      (App::PropertyType)(App::Prop_None),
-                      "Refine shape (clean up redundant edges) after adding/subtracting");
+    PROPERTY_HEADER_WITH_OVERRIDE(NomAnor::FeatureToolShape);
 
-    // Initialize Refine property from preference
-    Base::Reference<ParameterGrp> hGrp = App::GetApplication()
-                                             .GetUserParameter()
-                                             .GetGroup("BaseApp")
-                                             ->GetGroup("Preferences")
-                                             ->GetGroup("Mod/PartDesign");
-    Refine.setValue(hGrp->GetBool("RefineModel", false));
-}
+public:
+    FeatureToolShape();
 
-short Feature::mustExecute() const
-{
-    if (Refine.isTouched()) {
-        return 1;
-    }
-    return PartDesign::Feature::mustExecute();
-}
+    App::PropertyEnumeration Operation;
+
+    short mustExecute() const override;
+
+    std::vector<ToolShape> getToolShapes() const override;
+
+protected:
+    FeatureToolShapes::Operation getOperation() const;
+
+    virtual TopoDS_Shape getToolShape() const = 0;
+
+private:
+    static char const* OperationEnums[];
+};
 
 }  // namespace NomAnor
+
+
+#endif  // NOMANOR_FeatureToolShape_H

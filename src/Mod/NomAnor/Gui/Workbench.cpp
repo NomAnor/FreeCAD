@@ -49,7 +49,6 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* nomanor = new Gui::MenuItem;
     root->insertItem(item, nomanor);
     nomanor->setCommand("NomAnor");
-    *nomanor << "NomAnor_Feature";
 
     return root;
 }
@@ -60,7 +59,6 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 
     Gui::ToolBarItem* features = new Gui::ToolBarItem(root);
     features->setCommand("NomAnor Features");
-    *features << "NomAnor_Feature";
 
     return root;
 }

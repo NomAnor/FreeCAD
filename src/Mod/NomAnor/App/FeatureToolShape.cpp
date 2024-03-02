@@ -20,34 +20,53 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "FeatureToolShape.h"
 
-#ifndef NOMANOR_Feature_H
-#define NOMANOR_Feature_H
+#include "PreCompiled.h"
+#ifndef _PreComp_
+#endif
 
-#include <Mod/NomAnor/NomAnorGlobal.h>
-#include <App/PropertyStandard.h>
-#include <Mod/PartDesign/App/Feature.h>
+#include <App/Application.h>
+
+
+FC_LOG_LEVEL_INIT("NomANor", true, true)
+
 
 namespace NomAnor
 {
 
-/** PartDesign feature
- *   Base class of all PartDesign features.
- *   This kind of features only produce solids or fail.
- */
-class NomAnorExport Feature: public PartDesign::Feature
+PROPERTY_SOURCE_ABSTRACT(NomAnor::FeatureToolShape, NomAnor::FeatureToolShapes)
+
+char const* FeatureToolShape::OperationEnums[]= {"Fuse", "Cut", "Common", nullptr};
+
+FeatureToolShape::FeatureToolShape()
 {
-    PROPERTY_HEADER_WITH_OVERRIDE(NomAnor::Feature);
+    ADD_PROPERTY(Operation,((long)0));
+    Operation.setEnums(OperationEnums);
+}
 
-public:
-    Feature();
+short FeatureToolShape::mustExecute() const
+{
+    if (Operation.isTouched()) {
+        return 1;
+    }
+    return NomAnor::FeatureToolShapes::mustExecute();
+}
 
-    App::PropertyBool Refine;
+FeatureToolShapes::Operation FeatureToolShape::getOperation() const
+{
+    int value = Operation.getValue();
+    return static_cast<FeatureToolShapes::Operation>(value);
+}
 
-    short mustExecute() const override;
-};
+auto FeatureToolShape::getToolShapes() const -> std::vector<ToolShape>
+{
+    auto shape = getToolShape();
+    if (shape.IsNull()) {
+        return {};
+    }
+
+    return {ToolShape{getOperation(), shape}};
+}
 
 }  // namespace NomAnor
-
-
-#endif  // NOMANOR_Feature_H

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME <Your e-mail address>                    *
+ *   Copyright (c) 2011 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,20 +21,54 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-#endif
+#ifndef NOMANOR_FeatureToolShapes_H
+#define NOMANOR_FeatureToolShapes_H
 
-#include <App/Document.h>
-#include <Base/Console.h>
-#include <Gui/Application.h>
-#include <Gui/Command.h>
-#include <Mod/PartDesign/App/Body.h>
-#include <Mod/PartDesign/Gui/Utils.h>
+#include <vector>
 
+#include <App/PropertyStandard.h>
+#include <Mod/PartDesign/App/Feature.h>
 
-void CreateNomAnorCommands(void)
+#include "../NomAnorGlobal.h"
+
+namespace NomAnor
 {
-    Gui::CommandManager& rcCmdMgr = Gui::Application::Instance->commandManager();
 
-}
+/** PartDesign feature based on tool shapes
+ * Base class of all PartDesign features that use boolean operations with tools shapes.
+ */
+class NomAnorExport FeatureToolShapes: public PartDesign::Feature
+{
+    PROPERTY_HEADER_WITH_OVERRIDE(NomAnor::FeatureToolShapes);
+
+public:
+    FeatureToolShapes();
+
+    App::PropertyBool Refine;
+
+    short mustExecute() const override;
+
+    enum class Operation {
+        Fuse,
+        Cut,
+        Common
+    };
+
+    struct ToolShape {
+        Operation operation;
+        TopoDS_Shape shape;
+    };
+
+    virtual std::vector<ToolShape> getToolShapes() const
+    {
+        return {};
+    }
+
+protected:
+    App::DocumentObjectExecReturn* execute() override;
+};
+
+}  // namespace NomAnor
+
+
+#endif  // NOMANOR_FeatureToolShapes_H

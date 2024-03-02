@@ -33,7 +33,8 @@
 #include <CXX/Extensions.hxx>
 #include <CXX/Objects.hxx>
 
-#include "Feature.h"
+#include "FeatureToolShapes.h"
+#include "FeatureToolShape.h"
 
 
 namespace NomAnor
@@ -75,7 +76,8 @@ PyMOD_INIT_FUNC(NomAnor)
     }
 
     // Register all objects
-    NomAnor::Feature::init();
+    NomAnor::FeatureToolShapes::init();
+    NomAnor::FeatureToolShape::init();
 
     PyObject* mod = NomAnor::initModule();
     Base::Console().Log("Loading NomAnor module... done\n");

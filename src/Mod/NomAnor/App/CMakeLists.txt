@@ -17,8 +17,10 @@ SET(NomAnor_SRCS
     AppNomAnor.cpp
     PreCompiled.cpp
     PreCompiled.h
-    Feature.h
-    Feature.cpp
+    FeatureToolShapes.h
+    FeatureToolShapes.cpp
+    FeatureToolShape.h
+    FeatureToolShape.cpp
 )
 
 add_library(NomAnor SHARED ${NomAnor_SRCS})
