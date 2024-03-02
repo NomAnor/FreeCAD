@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME <Your e-mail address>                    *
+ *   Copyright (c) 2011 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,76 +21,35 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-#include <Python.h>
-#endif
+#ifndef NOMANOR_FeatureBoolean_H
+#define NOMANOR_FeatureBoolean_H
 
-#include <Base/Console.h>
-#include <Base/Interpreter.h>
-#include <Base/PyObjectBase.h>
+#include <App/PropertyStandard.h>
+#include <Mod/Part/App/AttachExtension.h>
 
-#include <CXX/Extensions.hxx>
-#include <CXX/Objects.hxx>
-
-#include "FeatureToolShapes.h"
+#include "../NomAnorGlobal.h"
 #include "FeatureToolShape.h"
-#include "FeaturePrimitive.h"
-#include "FeatureExtrude.h"
-#include "FeatureBoolean.h"
-
 
 namespace NomAnor
 {
-class Module: public Py::ExtensionModule<Module>
-{
-public:
-    Module()
-        : Py::ExtensionModule<Module>("NomAnor")
-    {
-        initialize("This module is the NomAnor module.");  // register with Python
-    }
 
-    virtual ~Module()
-    {}
+class NomAnorExport FeatureBoolean: public NomAnor::FeatureToolShape, public Part::AttachExtension
+{
+    PROPERTY_HEADER_WITH_EXTENSIONS(NomAnor::FeatureBoolean);
+
+public:
+    FeatureBoolean();
+
+    App::PropertyLink Tool;
+    App::PropertyBool UseToolPacement;
+
+    short mustExecute() const override;
 
 private:
+    TopoDS_Shape getToolShape() const override;
 };
-
-PyObject* initModule()
-{
-    return Base::Interpreter().addModule(new Module);
-}
-
 
 }  // namespace NomAnor
 
 
-/* Python entry */
-PyMOD_INIT_FUNC(NomAnor)
-{
-    // Load dependent modules
-    try {
-        Base::Interpreter().runString("import PartDesign");
-    }
-    catch(const Base::Exception& e) {
-        PyErr_SetString(PyExc_ImportError, e.what());
-        PyMOD_Return(nullptr);
-    }
-
-    // Register all objects
-    NomAnor::FeatureToolShapes::init();
-    NomAnor::FeatureToolShape::init();
-    
-    NomAnor::FeaturePrimitive::init();
-    NomAnor::FeatureBox::init();
-    NomAnor::FeatureCylinder::init();
-    
-    NomAnor::FeatureExtrude::init();
-    
-    NomAnor::FeatureBoolean::init();
-
-    PyObject* mod = NomAnor::initModule();
-    Base::Console().Log("Loading NomAnor module... done\n");
-    PyMOD_Return(mod);
-}
+#endif  // NOMANOR_FeatureBoolean_H

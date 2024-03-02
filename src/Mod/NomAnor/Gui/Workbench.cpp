@@ -51,7 +51,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     nomanor->setCommand("NomAnor");
     *nomanor << "NomAnor_FeatureBox"
             << "NomAnor_FeatureCylinder"
-            << "NomAnor_FeatureExtrude";
+            << "NomAnor_FeatureExtrude"
+            << "NomAnor_FeatureBoolean";
 
     return root;
 }
@@ -64,7 +65,8 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     features->setCommand("NomAnor Features");
     *features << "NomAnor_FeatureBox"
             << "NomAnor_FeatureCylinder"
-            << "NomAnor_FeatureExtrude";
+            << "NomAnor_FeatureExtrude"
+            << "NomAnor_FeatureBoolean";
 
     return root;
 }

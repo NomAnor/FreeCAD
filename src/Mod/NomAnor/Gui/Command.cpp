@@ -32,8 +32,6 @@
 #include <Mod/PartDesign/App/Body.h>
 #include <Mod/PartDesign/Gui/Utils.h>
 
-#include <Mod/NomAnor/App/FeaturePrimitive.h>
-
 
 DEF_STD_CMD_A(CmdNomAnorFeatureBox)
 
@@ -146,6 +144,43 @@ bool CmdNomAnorFeatureExtrude::isActive()
 }
 
 
+DEF_STD_CMD_A(CmdNomAnorFeatureBoolean)
+
+CmdNomAnorFeatureBoolean::CmdNomAnorFeatureBoolean()
+    : Command("NomAnor_FeatureBoolean")
+{
+    sAppModule = "NomAnor";
+    sGroup = QT_TR_NOOP("NomAnor");
+    sMenuText = QT_TR_NOOP("Boolean");
+    sToolTipText = QT_TR_NOOP("Add a boolean feature");
+    sWhatsThis = "NomAnor_FeatureBoolean";
+    sStatusTip = sToolTipText;
+    sPixmap = "PartDesign_Boolean";
+}
+
+void CmdNomAnorFeatureBoolean::activated(int)
+{
+    PartDesign::Body* pcActiveBody = PartDesignGui::getBody(/*messageIfNot = */ true);
+    if (!pcActiveBody) {
+        return;
+    }
+
+    openCommand(QT_TRANSLATE_NOOP("Command", "Create Feature"));
+
+    std::string featureName = getUniqueObjectName("Boolean", pcActiveBody);
+    FCMD_OBJ_CMD(pcActiveBody, "newObject('NomAnor::FeatureBoolean', '" << featureName << "')");
+    Gui::Command::updateActive();
+
+    //auto feature =
+    //    static_cast<NomAnor::Feature*>(pcActiveBody->getDocument()->getObject(featureName.c_str()));
+}
+
+bool CmdNomAnorFeatureBoolean::isActive()
+{
+    return getActiveGuiDocument();
+}
+
+
 void CreateNomAnorCommands(void)
 {
     Gui::CommandManager& rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -154,4 +189,6 @@ void CreateNomAnorCommands(void)
     rcCmdMgr.addCommand(new CmdNomAnorFeatureCylinder());
 
     rcCmdMgr.addCommand(new CmdNomAnorFeatureExtrude());
+    
+    rcCmdMgr.addCommand(new CmdNomAnorFeatureBoolean());
 }
