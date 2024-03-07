@@ -109,10 +109,49 @@ bool CmdNomAnorFeatureCylinder::isActive()
 }
 
 
+DEF_STD_CMD_A(CmdNomAnorFeatureExtrude)
+
+CmdNomAnorFeatureExtrude::CmdNomAnorFeatureExtrude()
+    : Command("NomAnor_FeatureExtrude")
+{
+    sAppModule = "NomAnor";
+    sGroup = QT_TR_NOOP("NomAnor");
+    sMenuText = QT_TR_NOOP("Extrude");
+    sToolTipText = QT_TR_NOOP("Add an extrude feature");
+    sWhatsThis = "NomAnor_FeatureExtrude";
+    sStatusTip = sToolTipText;
+    sPixmap = "PartDesign_Pad";
+}
+
+void CmdNomAnorFeatureExtrude::activated(int)
+{
+    PartDesign::Body* pcActiveBody = PartDesignGui::getBody(/*messageIfNot = */ true);
+    if (!pcActiveBody) {
+        return;
+    }
+
+    openCommand(QT_TRANSLATE_NOOP("Command", "Create Feature"));
+
+    std::string featureName = getUniqueObjectName("Extrusion", pcActiveBody);
+    FCMD_OBJ_CMD(pcActiveBody, "newObject('NomAnor::FeatureExtrude', '" << featureName << "')");
+    Gui::Command::updateActive();
+
+    //auto feature =
+    //    static_cast<NomAnor::Feature*>(pcActiveBody->getDocument()->getObject(featureName.c_str()));
+}
+
+bool CmdNomAnorFeatureExtrude::isActive()
+{
+    return getActiveGuiDocument();
+}
+
+
 void CreateNomAnorCommands(void)
 {
     Gui::CommandManager& rcCmdMgr = Gui::Application::Instance->commandManager();
 
     rcCmdMgr.addCommand(new CmdNomAnorFeatureBox());
     rcCmdMgr.addCommand(new CmdNomAnorFeatureCylinder());
+
+    rcCmdMgr.addCommand(new CmdNomAnorFeatureExtrude());
 }

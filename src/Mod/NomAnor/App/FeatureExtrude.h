@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME <Your e-mail address>                    *
+ *   Copyright (c) 2011 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,50 +21,51 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+#ifndef NOMANOR_FeatureExtrude_H
+#define NOMANOR_FeatureExtrude_H
 
-#ifndef _PreComp_
-#endif
+#include <App/PropertyUnits.h>
+#include <Mod/Part/App/Part2DObject.h>
 
-#include "Workbench.h"
-#include <Gui/MenuManager.h>
-#include <Gui/ToolBarManager.h>
+#include "../NomAnorGlobal.h"
+#include "FeatureToolShape.h"
 
-using namespace NomAnorGui;
-
-/// @namespace NomAnorGui @class Workbench
-TYPESYSTEM_SOURCE(NomAnorGui::Workbench, Gui::StdWorkbench)
-
-Workbench::Workbench()
-{}
-
-Workbench::~Workbench()
-{}
-
-Gui::MenuItem* Workbench::setupMenuBar() const
+namespace NomAnor
 {
-    Gui::MenuItem* root = StdWorkbench::setupMenuBar();
-    Gui::MenuItem* item = root->findItem("&Windows");
 
-    Gui::MenuItem* nomanor = new Gui::MenuItem;
-    root->insertItem(item, nomanor);
-    nomanor->setCommand("NomAnor");
-    *nomanor << "NomAnor_FeatureBox"
-            << "NomAnor_FeatureCylinder"
-            << "NomAnor_FeatureExtrude";
-
-    return root;
-}
-
-Gui::ToolBarItem* Workbench::setupToolBars() const
+class NomAnorExport FeatureExtrude: public NomAnor::FeatureToolShape
 {
-    Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
+    PROPERTY_HEADER_WITH_OVERRIDE(NomAnor::FeatureExtrude);
 
-    Gui::ToolBarItem* features = new Gui::ToolBarItem(root);
-    features->setCommand("NomAnor Features");
-    *features << "NomAnor_FeatureBox"
-            << "NomAnor_FeatureCylinder"
-            << "NomAnor_FeatureExtrude";
+public:
+    FeatureExtrude();
 
-    return root;
-}
+    App::PropertyLinkSub Profile;
+    App::PropertyBool    Reversed;
+    App::PropertyBool    Midplane;
+
+    App::PropertyEnumeration Type;
+    App::PropertyLength      Length;
+    App::PropertyLength      Length2;
+    App::PropertyLength      Offset;
+
+    short mustExecute() const override;
+
+private:
+    App::DocumentObjectExecReturn* execute() override;
+    TopoDS_Shape getToolShape() const override;
+
+    Base::Vector3d getProfileNormal() const;
+    Part::Feature* getVerifiedObject(bool silent = false) const;
+    TopoDS_Shape getVerifiedFace(bool silent = false) const;
+    std::vector<TopoDS_Wire> getProfileWires() const;
+    Part::Part2DObject* getVerifiedSketch(bool silent = false) const;
+
+private:
+    static char const* TypeEnums[];
+};
+
+}  // namespace NomAnor
+
+
+#endif  // NOMANOR_FeatureExtrude_H

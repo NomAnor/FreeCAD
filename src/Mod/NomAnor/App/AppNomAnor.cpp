@@ -36,6 +36,7 @@
 #include "FeatureToolShapes.h"
 #include "FeatureToolShape.h"
 #include "FeaturePrimitive.h"
+#include "FeatureExtrude.h"
 
 
 namespace NomAnor
@@ -83,6 +84,8 @@ PyMOD_INIT_FUNC(NomAnor)
     NomAnor::FeaturePrimitive::init();
     NomAnor::FeatureBox::init();
     NomAnor::FeatureCylinder::init();
+    
+    NomAnor::FeatureExtrude::init();
 
     PyObject* mod = NomAnor::initModule();
     Base::Console().Log("Loading NomAnor module... done\n");
