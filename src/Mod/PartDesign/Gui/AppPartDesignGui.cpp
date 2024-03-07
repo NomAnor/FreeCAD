@@ -107,6 +107,7 @@ PyMOD_INIT_FUNC(PartDesignGui)
     try {
         Base::Interpreter().runString("import PartGui");
         Base::Interpreter().runString("import SketcherGui");
+        Base::Interpreter().runString("import NomAnorGui");
     }
     catch(const Base::Exception& e) {
         PyErr_SetString(PyExc_ImportError, e.what());

@@ -666,6 +666,16 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
              << "Part_Measure_Toggle_3D"
              << "Part_Measure_Toggle_Delta";
 
+    Gui::ToolBarItem* features = new Gui::ToolBarItem(root);
+    features->setCommand("NomAnor Features");
+    *features << "NomAnor_FeatureBox"
+            << "NomAnor_FeatureCylinder"
+            << "NomAnor_FeatureExtrude"
+            << "NomAnor_FeatureBoolean"
+            << "NomAnor_FeatureMirrored"
+            << "NomAnor_FeatureLinearPattern"
+            << "NomAnor_FeaturePolarPattern";
+
     return root;
 }
 
