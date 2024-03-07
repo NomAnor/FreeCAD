@@ -52,7 +52,10 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     *nomanor << "NomAnor_FeatureBox"
             << "NomAnor_FeatureCylinder"
             << "NomAnor_FeatureExtrude"
-            << "NomAnor_FeatureBoolean";
+            << "NomAnor_FeatureBoolean"
+            << "NomAnor_FeatureMirrored"
+            << "NomAnor_FeatureLinearPattern"
+            << "NomAnor_FeaturePolarPattern";
 
     return root;
 }
@@ -66,7 +69,10 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     *features << "NomAnor_FeatureBox"
             << "NomAnor_FeatureCylinder"
             << "NomAnor_FeatureExtrude"
-            << "NomAnor_FeatureBoolean";
+            << "NomAnor_FeatureBoolean"
+            << "NomAnor_FeatureMirrored"
+            << "NomAnor_FeatureLinearPattern"
+            << "NomAnor_FeaturePolarPattern";
 
     return root;
 }

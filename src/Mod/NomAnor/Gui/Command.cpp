@@ -181,6 +181,117 @@ bool CmdNomAnorFeatureBoolean::isActive()
 }
 
 
+DEF_STD_CMD_A(CmdNomAnorFeatureMirrored)
+
+CmdNomAnorFeatureMirrored::CmdNomAnorFeatureMirrored()
+    : Command("NomAnor_FeatureMirrored")
+{
+    sAppModule = "NomAnor";
+    sGroup = QT_TR_NOOP("NomAnor");
+    sMenuText = QT_TR_NOOP("Mirrored");
+    sToolTipText = QT_TR_NOOP("Add a mirror feature");
+    sWhatsThis = "NomAnor_FeatureMirrored";
+    sStatusTip = sToolTipText;
+    sPixmap = "PartDesign_Mirrored";
+}
+
+void CmdNomAnorFeatureMirrored::activated(int)
+{
+    PartDesign::Body* pcActiveBody = PartDesignGui::getBody(/*messageIfNot = */ true);
+    if (!pcActiveBody) {
+        return;
+    }
+
+    openCommand(QT_TRANSLATE_NOOP("Command", "Create Feature"));
+
+    std::string featureName = getUniqueObjectName("Mirror", pcActiveBody);
+    FCMD_OBJ_CMD(pcActiveBody, "newObject('NomAnor::FeatureMirrored', '" << featureName << "')");
+    Gui::Command::updateActive();
+
+    //auto feature =
+    //    static_cast<NomAnor::Feature*>(pcActiveBody->getDocument()->getObject(featureName.c_str()));
+}
+
+bool CmdNomAnorFeatureMirrored::isActive()
+{
+    return getActiveGuiDocument();
+}
+
+
+DEF_STD_CMD_A(CmdNomAnorFeatureLinearPattern)
+
+CmdNomAnorFeatureLinearPattern::CmdNomAnorFeatureLinearPattern()
+    : Command("NomAnor_FeatureLinearPattern")
+{
+    sAppModule = "NomAnor";
+    sGroup = QT_TR_NOOP("NomAnor");
+    sMenuText = QT_TR_NOOP("Linear Pattern");
+    sToolTipText = QT_TR_NOOP("Add a linear pattern feature");
+    sWhatsThis = "NomAnor_FeatureLinearPattern";
+    sStatusTip = sToolTipText;
+    sPixmap = "PartDesign_LinearPattern";
+}
+
+void CmdNomAnorFeatureLinearPattern::activated(int)
+{
+    PartDesign::Body* pcActiveBody = PartDesignGui::getBody(/*messageIfNot = */ true);
+    if (!pcActiveBody) {
+        return;
+    }
+
+    openCommand(QT_TRANSLATE_NOOP("Command", "Create Feature"));
+
+    std::string featureName = getUniqueObjectName("LinearPattern", pcActiveBody);
+    FCMD_OBJ_CMD(pcActiveBody, "newObject('NomAnor::FeatureLinearPattern', '" << featureName << "')");
+    Gui::Command::updateActive();
+
+    //auto feature =
+    //    static_cast<NomAnor::Feature*>(pcActiveBody->getDocument()->getObject(featureName.c_str()));
+}
+
+bool CmdNomAnorFeatureLinearPattern::isActive()
+{
+    return getActiveGuiDocument();
+}
+
+
+DEF_STD_CMD_A(CmdNomAnorFeaturePolarPattern)
+
+CmdNomAnorFeaturePolarPattern::CmdNomAnorFeaturePolarPattern()
+    : Command("NomAnor_FeaturePolarPattern")
+{
+    sAppModule = "NomAnor";
+    sGroup = QT_TR_NOOP("NomAnor");
+    sMenuText = QT_TR_NOOP("Polar Pattern");
+    sToolTipText = QT_TR_NOOP("Add a polar pattern feature");
+    sWhatsThis = "NomAnor_FeaturePolarPattern";
+    sStatusTip = sToolTipText;
+    sPixmap = "PartDesign_PolarPattern";
+}
+
+void CmdNomAnorFeaturePolarPattern::activated(int)
+{
+    PartDesign::Body* pcActiveBody = PartDesignGui::getBody(/*messageIfNot = */ true);
+    if (!pcActiveBody) {
+        return;
+    }
+
+    openCommand(QT_TRANSLATE_NOOP("Command", "Create Feature"));
+
+    std::string featureName = getUniqueObjectName("PolarPattern", pcActiveBody);
+    FCMD_OBJ_CMD(pcActiveBody, "newObject('NomAnor::FeaturePolarPattern', '" << featureName << "')");
+    Gui::Command::updateActive();
+
+    //auto feature =
+    //    static_cast<NomAnor::Feature*>(pcActiveBody->getDocument()->getObject(featureName.c_str()));
+}
+
+bool CmdNomAnorFeaturePolarPattern::isActive()
+{
+    return getActiveGuiDocument();
+}
+
+
 void CreateNomAnorCommands(void)
 {
     Gui::CommandManager& rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -191,4 +302,7 @@ void CreateNomAnorCommands(void)
     rcCmdMgr.addCommand(new CmdNomAnorFeatureExtrude());
     
     rcCmdMgr.addCommand(new CmdNomAnorFeatureBoolean());
+    rcCmdMgr.addCommand(new CmdNomAnorFeatureMirrored());
+    rcCmdMgr.addCommand(new CmdNomAnorFeatureLinearPattern());
+    rcCmdMgr.addCommand(new CmdNomAnorFeaturePolarPattern());
 }

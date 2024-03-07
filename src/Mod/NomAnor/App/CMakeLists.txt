@@ -27,6 +27,8 @@ SET(NomAnor_SRCS
     FeatureExtrude.cpp
     FeatureBoolean.h
     FeatureBoolean.cpp
+    FeaturePattern.h
+    FeaturePattern.cpp
 )
 
 add_library(NomAnor SHARED ${NomAnor_SRCS})

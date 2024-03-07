@@ -38,6 +38,7 @@
 #include "FeaturePrimitive.h"
 #include "FeatureExtrude.h"
 #include "FeatureBoolean.h"
+#include "FeaturePattern.h"
 
 
 namespace NomAnor
@@ -89,6 +90,11 @@ PyMOD_INIT_FUNC(NomAnor)
     NomAnor::FeatureExtrude::init();
     
     NomAnor::FeatureBoolean::init();
+
+    NomAnor::FeaturePattern::init();
+    NomAnor::FeatureMirrored::init();
+    NomAnor::FeatureLinearPattern::init();
+    NomAnor::FeaturePolarPattern::init();
 
     PyObject* mod = NomAnor::initModule();
     Base::Console().Log("Loading NomAnor module... done\n");
