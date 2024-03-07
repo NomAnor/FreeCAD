@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME <Your e-mail address>                    *
+ *   Copyright (c) 2011 Juergen Riegel <FreeCAD@juergen-riegel.net>        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,70 +21,63 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-#include <Python.h>
-#endif
+#ifndef NOMANOR_FeaturePrimitive_H
+#define NOMANOR_FeaturePrimitive_H
 
-#include <Base/Console.h>
-#include <Base/Interpreter.h>
-#include <Base/PyObjectBase.h>
+#include <App/PropertyUnits.h>
+#include <Mod/Part/App/AttachExtension.h>
 
-#include <CXX/Extensions.hxx>
-#include <CXX/Objects.hxx>
-
-#include "FeatureToolShapes.h"
+#include "../NomAnorGlobal.h"
 #include "FeatureToolShape.h"
-#include "FeaturePrimitive.h"
-
 
 namespace NomAnor
 {
-class Module: public Py::ExtensionModule<Module>
+
+/** PartDesign feature with a primitive shape
+ * Base class of all PartDesign features that create primitive shapes
+ */
+class NomAnorExport FeaturePrimitive: public NomAnor::FeatureToolShape, public Part::AttachExtension
 {
+    PROPERTY_HEADER_WITH_EXTENSIONS(NomAnor::FeaturePrimitive);
+
 public:
-    Module()
-        : Py::ExtensionModule<Module>("NomAnor")
-    {
-        initialize("This module is the NomAnor module.");  // register with Python
-    }
+    FeaturePrimitive();
 
-    virtual ~Module()
-    {}
+    short mustExecute() const override;
 
-private:
+    std::vector<ToolShape> getToolShapes() const override;
 };
 
-PyObject* initModule()
+class NomAnorExport FeatureBox: public NomAnor::FeaturePrimitive
 {
-    return Base::Interpreter().addModule(new Module);
-}
+    PROPERTY_HEADER_WITH_OVERRIDE(NomAnor::FeatureBox);
 
+public:
+    FeatureBox();
+
+    App::PropertyLength Length, Height, Width;
+
+    short mustExecute() const override;
+
+    TopoDS_Shape getToolShape() const override;
+};
+
+class NomAnorExport FeatureCylinder: public NomAnor::FeaturePrimitive
+{
+    PROPERTY_HEADER_WITH_OVERRIDE(NomAnor::FeatureCylinder);
+
+public:
+    FeatureCylinder();
+
+    App::PropertyLength Radius, Height;
+    App::PropertyAngle Angle;
+
+    short mustExecute() const override;
+
+    TopoDS_Shape getToolShape() const override;
+};
 
 }  // namespace NomAnor
 
 
-/* Python entry */
-PyMOD_INIT_FUNC(NomAnor)
-{
-    // Load dependent modules
-    try {
-        Base::Interpreter().runString("import PartDesign");
-    }
-    catch(const Base::Exception& e) {
-        PyErr_SetString(PyExc_ImportError, e.what());
-        PyMOD_Return(nullptr);
-    }
-
-    // Register all objects
-    NomAnor::FeatureToolShapes::init();
-    NomAnor::FeatureToolShape::init();
-    
-    NomAnor::FeaturePrimitive::init();
-    NomAnor::FeatureBox::init();
-    NomAnor::FeatureCylinder::init();
-
-    PyObject* mod = NomAnor::initModule();
-    Base::Console().Log("Loading NomAnor module... done\n");
-    PyMOD_Return(mod);
-}
+#endif  // NOMANOR_FeaturePrimitive_H

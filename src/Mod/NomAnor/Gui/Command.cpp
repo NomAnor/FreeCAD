@@ -32,9 +32,87 @@
 #include <Mod/PartDesign/App/Body.h>
 #include <Mod/PartDesign/Gui/Utils.h>
 
+#include <Mod/NomAnor/App/FeaturePrimitive.h>
+
+
+DEF_STD_CMD_A(CmdNomAnorFeatureBox)
+
+CmdNomAnorFeatureBox::CmdNomAnorFeatureBox()
+    : Command("NomAnor_FeatureBox")
+{
+    sAppModule = "NomAnor";
+    sGroup = QT_TR_NOOP("NomAnor");
+    sMenuText = QT_TR_NOOP("Box");
+    sToolTipText = QT_TR_NOOP("Add box feature");
+    sWhatsThis = "NomAnor_FeatureBox";
+    sStatusTip = sToolTipText;
+    sPixmap = "PartDesign_AdditiveBox";
+}
+
+void CmdNomAnorFeatureBox::activated(int)
+{
+    PartDesign::Body* pcActiveBody = PartDesignGui::getBody(/*messageIfNot = */ true);
+    if (!pcActiveBody) {
+        return;
+    }
+
+    openCommand(QT_TRANSLATE_NOOP("Command", "Create Feature"));
+
+    std::string featureName = getUniqueObjectName("Box", pcActiveBody);
+    FCMD_OBJ_CMD(pcActiveBody, "newObject('NomAnor::FeatureBox', '" << featureName << "')");
+    Gui::Command::updateActive();
+
+    //auto feature =
+    //    static_cast<NomAnor::Feature*>(pcActiveBody->getDocument()->getObject(featureName.c_str()));
+}
+
+bool CmdNomAnorFeatureBox::isActive()
+{
+    return getActiveGuiDocument();
+}
+
+
+DEF_STD_CMD_A(CmdNomAnorFeatureCylinder)
+
+CmdNomAnorFeatureCylinder::CmdNomAnorFeatureCylinder()
+    : Command("NomAnor_FeatureCylinder")
+{
+    sAppModule = "NomAnor";
+    sGroup = QT_TR_NOOP("NomAnor");
+    sMenuText = QT_TR_NOOP("Cylinder");
+    sToolTipText = QT_TR_NOOP("Add cylinder feature");
+    sWhatsThis = "NomAnor_FeatureCylinder";
+    sStatusTip = sToolTipText;
+    sPixmap = "PartDesign_AdditiveCylinder";
+}
+
+void CmdNomAnorFeatureCylinder::activated(int)
+{
+    PartDesign::Body* pcActiveBody = PartDesignGui::getBody(/*messageIfNot = */ true);
+    if (!pcActiveBody) {
+        return;
+    }
+
+    openCommand(QT_TRANSLATE_NOOP("Command", "Create Feature"));
+
+    std::string featureName = getUniqueObjectName("Cylinder", pcActiveBody);
+    FCMD_OBJ_CMD(pcActiveBody, "newObject('NomAnor::FeatureCylinder', '" << featureName << "')");
+    Gui::Command::updateActive();
+
+    //auto feature =
+    //    static_cast<NomAnor::Feature*>(pcActiveBody->getDocument()->getObject(featureName.c_str()));
+}
+
+bool CmdNomAnorFeatureCylinder::isActive()
+{
+    return getActiveGuiDocument();
+}
+
 
 void CreateNomAnorCommands(void)
 {
     Gui::CommandManager& rcCmdMgr = Gui::Application::Instance->commandManager();
 
+    rcCmdMgr.addCommand(new CmdNomAnorFeatureBox());
+    rcCmdMgr.addCommand(new CmdNomAnorFeatureCylinder());
 }
