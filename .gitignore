@@ -36,6 +36,8 @@ moc_*.cpp
 Makefile
 CMakeCache.txt
 CMakeLists.txt.user
+CMakeUserPresets.json
+compile_commands.json
 config.h
 install_manifest.txt
 /bin/
