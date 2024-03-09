@@ -23,6 +23,11 @@
 #ifndef UTILS_H_CS5LK2ZQ
 #define UTILS_H_CS5LK2ZQ
 
+#include <string>
+#include <vector>
+
+#include <QString>
+
 /** \file PartDesign/Gui/Utils.h
  *  This file contains some utility function used over PartDesignGui module
  */
