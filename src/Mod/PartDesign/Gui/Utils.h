@@ -28,6 +28,8 @@
 
 #include <QString>
 
+#include "../PartDesignGlobal.h"
+
 /** \file PartDesign/Gui/Utils.h
  *  This file contains some utility function used over PartDesignGui module
  */
@@ -52,7 +54,7 @@ namespace PartDesignGui {
 bool setEdit(App::DocumentObject *obj, PartDesign::Body *body = nullptr);
 
 /// Return active body or show a warning message
-PartDesign::Body *getBody(bool messageIfNot, bool autoActivate=true, bool assertModern=true,
+PartDesignGuiExport PartDesign::Body *getBody(bool messageIfNot, bool autoActivate=true, bool assertModern=true,
         App::DocumentObject **topParent=nullptr, std::string *subname=nullptr);
 
 /// Display a dialog to select or create a Body object when none is active
